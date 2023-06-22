@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Surveys</h1>
+    {% for key, survey in surveys.items() %}
+        <h2>{{ survey.title }}</h2>
+        <p>{{ survey.instructions }}</p>
+        <form method="POST" action="/">
+            <select name="survey" required>
+                {% for key, survey in surveys.items() %}
+                <option value="{{ key }}">{{ survey.title }}</option>
+                {% endfor %}
+            </select>
+            {% set question_index = 0 %}
+            {% for question in survey.questions %}
+                {% set question_index = loop.index %}
+                <p>{{ loop.index }} {{ question.question }}</p>
+                {% if question.allow_text %}
+                    <input type="text" name="{{ key }}_question_{{ question_index }}" required>
+                {% else %}
+                    {% set choice_index = 0 %}
+                    {% for choice in question.choices %}
+                        {% set choice_index = loop.index %}
+                        <input type="radio" name="{{ key }}_question_{{ question_index }}_choice" value="{{ choice }}" required>
+                        {{ choice }} <br>
+                    {% endfor %}
+                {% endif %}
+                <br>
+            {% endfor %}
+
+            <button type="submit">Submit</button>
+        </form>
+    {% endfor %}
+</body>
+</html>
